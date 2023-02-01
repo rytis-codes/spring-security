@@ -21,6 +21,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(registry -> registry
                     .requestMatchers("/").permitAll()
                     .requestMatchers("/public/**").permitAll()
+                    .requestMatchers("/auth/login").permitAll()
                     .requestMatchers("/admin").hasRole("ADMIN")
                     .anyRequest().authenticated()
             );
