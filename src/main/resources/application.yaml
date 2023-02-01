@@ -1,1 +1,4 @@
-
+security:
+    jwt:
+        secret-key: verysecretkeyohsosecretdamnhowlongisthispleasedontusethisinproduction
+        token-duration: 1D
