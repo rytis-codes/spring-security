@@ -5,9 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloController {
-    @GetMapping
+    @GetMapping("/")
     public String hello() {
         return "Hello, world! This is public to everyone";
+    }
+
+    @GetMapping("/public")
+    public String publicEndpoint() {
+        return "Everyone can see this";
     }
 
     @GetMapping("/secured")
