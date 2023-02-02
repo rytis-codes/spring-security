@@ -2,3 +2,7 @@ security:
     jwt:
         secret-key: verysecretkeyohsosecretdamnhowlongisthispleasedontusethisinproduction
         token-duration: 1D
+
+logging:
+    level:
+        org.springframework: debug
