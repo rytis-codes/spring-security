@@ -26,7 +26,7 @@ class HelloControllerTest {
 
     @Test
     void notLoggedIn_shouldNotSeeSecuredEndpoint() throws Exception {
-        api.perform(get("/secrued"))
+        api.perform(get("/secured"))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -34,6 +34,26 @@ class HelloControllerTest {
     @WithMockUser
     void loggedIn_shouldSeeSecuredEndpoint() throws Exception {
         api.perform(get("/secured"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void notLoggedIn_shouldNotSeeAdmin() throws Exception {
+        api.perform(get("/admin"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void simpleUser_shouldNotSeeAdmin() throws Exception {
+        api.perform(get("/admin"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithAdminUser
+    void adminUser_shouldSeeAdminEndpoint() throws Exception {
+        api.perform(get("/admin"))
                 .andExpect(status().isOk());
     }
 }

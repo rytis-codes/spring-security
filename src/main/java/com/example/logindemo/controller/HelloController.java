@@ -22,4 +22,9 @@ public class HelloController {
         return "This can only be seen by a logged in user. Your Email is: "
                 + principal.getEmail() + " your ID: " + principal.getUserId();
     }
+
+    @GetMapping("/admin")
+    public String admin(@AuthenticationPrincipal UserPrincipal principal) {
+        return "If you see this, you are an admin. Your ID: " + principal.getUserId();
+    }
 }
