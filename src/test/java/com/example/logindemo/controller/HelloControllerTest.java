@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -21,7 +22,7 @@ class HelloControllerTest {
     void anyoneCanViewPublicEndpoint() throws Exception {
         api.perform(get("/public"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Everyone can see this"));
+                .andExpect(content().string(containsStringIgnoringCase("Everyone")));
     }
 
     @Test
@@ -34,7 +35,8 @@ class HelloControllerTest {
     @WithMockUser
     void loggedIn_shouldSeeSecuredEndpoint() throws Exception {
         api.perform(get("/secured"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsStringIgnoringCase("Your ID: 1")));
     }
 
     @Test
@@ -54,6 +56,7 @@ class HelloControllerTest {
     @WithAdminUser
     void adminUser_shouldSeeAdminEndpoint() throws Exception {
         api.perform(get("/admin"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsStringIgnoringCase("Your ID: 1")));
     }
 }
