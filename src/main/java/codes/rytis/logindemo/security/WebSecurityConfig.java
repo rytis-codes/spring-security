@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,13 +27,11 @@ public class WebSecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http
-            .cors().disable()
-            .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .formLogin().disable()
-            .exceptionHandling()
-                .authenticationEntryPoint(unauthorizedHandler)
-                .and()
+            .cors(AbstractHttpConfigurer::disable)
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .formLogin(AbstractHttpConfigurer::disable)
+            .exceptionHandling(h -> h.authenticationEntryPoint(unauthorizedHandler))
             .securityMatcher("/**")
             .authorizeHttpRequests(registry -> registry
                     .requestMatchers("/").permitAll()
@@ -51,10 +50,10 @@ public class WebSecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
+        var builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        builder
                 .userDetailsService(customUserDetailService)
-                .passwordEncoder(passwordEncoder())
-                .and()
-                .build();
+                .passwordEncoder(passwordEncoder());
+        return builder.build();
     }
 }
